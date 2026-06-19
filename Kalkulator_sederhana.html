@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalkulator Sederhana</title>
+  <style>
+    /* RESET & GLOBAL */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(145deg, #1a2634, #0e1219);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 16px;
+    }
+
+    /* WRAPPER KALKULATOR */
+    .calculator-wrapper {
+      background: #1f2a36;
+      border-radius: 32px;
+      padding: 24px 24px 30px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.06);
+      max-width: 420px;
+      width: 100%;
+      transition: transform 0.2s ease;
+    }
+
+    .calculator-wrapper:hover {
+      transform: scale(1.005);
+    }
+
+    /* JUDUL */
+    .title {
+      color: #b6c8d9;
+      font-weight: 400;
+      font-size: 1.1rem;
+      letter-spacing: 1.5px;
+      text-align: center;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      user-select: none;
+    }
+
+    /* LAYAR */
+    #display {
+      width: 100%;
+      padding: 18px 22px;
+      font-size: 2.4rem;
+      font-weight: 600;
+      text-align: right;
+      background: #0f151c;
+      border: none;
+      border-radius: 18px;
+      color: #edf2f7;
+      box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.05);
+      margin-bottom: 22px;
+      font-family: 'Segoe UI', monospace;
+      letter-spacing: 1px;
+      transition: all 0.15s ease;
+    }
+
+    #display:focus {
+      outline: none;
+      box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.6), 0 0 0 2px #3b5d7a;
+    }
+
+    /* GRID TOMBOL */
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    /* TOMBOL GENERIK */
+    .buttons button {
+      padding: 18px 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 18px;
+      background: #2b3a48;
+      color: #e3edf5;
+      box-shadow: 0 6px 0 #141b23, 0 4px 12px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      transition: all 0.08s ease;
+      font-family: 'Segoe UI', sans-serif;
+      letter-spacing: 0.5px;
+      user-select: none;
+    }
+
+    .buttons button:active {
+      transform: translateY(5px);
+      box-shadow: 0 1px 0 #141b23;
+    }
+
+    /* TOMBOL ANGKA */
+    .buttons button.num {
+      background: #2f4052;
+      box-shadow: 0 6px 0 #1a2530;
+    }
+
+    .buttons button.num:active {
+      transform: translateY(5px);
+      box-shadow: 0 1px 0 #1a2530;
+    }
+
+    /* TOMBOL OPERATOR */
+    .buttons button.op {
+      background: #3d566d;
+      box-shadow: 0 6px 0 #25333f;
+      color: #b8d8fc;
+    }
+
+    .buttons button.op:active {
+      transform: translateY(5px);
+      box-shadow: 0 1px 0 #25333f;
+    }
+
+    /* TOMBOL SAMA DENGAN */
+    .buttons button.equals {
+      background: #e68a2e;
+      box-shadow: 0 6px 0 #a05f1b;
+      color: #fff;
+      font-size: 2rem;
+      grid-column: span 1;
+    }
+
+    .buttons button.equals:active {
+      transform: translateY(5px);
+      box-shadow: 0 1px 0 #a05f1b;
+    }
+
+    /* TOMBOL CLEAR */
+    .buttons button.clear {
+      background: #b13e3e;
+      box-shadow: 0 6px 0 #752727;
+      color: #fff;
+    }
+
+    .buttons button.clear:active {
+      transform: translateY(5px);
+      box-shadow: 0 1px 0 #752727;
+    }
+
+    /* TOMBOL FUNGSI (√, π, xʸ) */
+    .buttons button.fn {
+      background: #3f4e5e;
+      box-shadow: 0 6px 0 #28333f;
+      color: #c7ddf5;
+    }
+
+    .buttons button.fn:active {
+      transform: translateY(5px);
+      box-shadow: 0 1px 0 #28333f;
+    }
+
+    /* HOVER EFFECT (DESKTOP) */
+    @media (hover: hover) {
+      .buttons button:hover {
+        filter: brightness(1.2);
+      }
+      .buttons button.equals:hover {
+        filter: brightness(1.15);
+      }
+      .buttons button.clear:hover {
+        filter: brightness(1.15);
+      }
+    }
+
+    /* RESPONSIVE UNTUK HP KECIL */
+    @media (max-width: 480px) {
+      .calculator-wrapper {
+        padding: 18px 16px 22px;
+        border-radius: 24px;
+      }
+
+      #display {
+        font-size: 2rem;
+        padding: 14px 16px;
+        border-radius: 14px;
+      }
+
+      .buttons {
+        gap: 10px;
+      }
+
+      .buttons button {
+        padding: 16px 0;
+        font-size: 1.3rem;
+        border-radius: 14px;
+      }
+
+      .buttons button.equals {
+        font-size: 1.7rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .buttons {
+        gap: 8px;
+      }
+      .buttons button {
+        padding: 14px 0;
+        font-size: 1.1rem;
+        border-radius: 12px;
+      }
+      #display {
+        font-size: 1.7rem;
+        padding: 12px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="calculator-wrapper">
+  <!-- JUDUL -->
+  <div class="title">✦ Kalkulator ✦</div>
+
+  <!-- LAYAR -->
+  <input type="text" id="display" disabled />
+
+  <!-- TOMBOL -->
+  <div class="buttons">
+    <!-- Baris 1 -->
+    <button class="clear" onclick="clearDisplay()">C</button>
+    <button class="fn" onclick="appendToDisplay('(')">(</button>
+    <button class="fn" onclick="appendToDisplay(')')">)</button>
+    <button class="op" onclick="appendToDisplay('/')">÷</button>
+
+    <!-- Baris 2 -->
+    <button class="num" onclick="appendToDisplay('7')">7</button>
+    <button class="num" onclick="appendToDisplay('8')">8</button>
+    <button class="num" onclick="appendToDisplay('9')">9</button>
+    <button class="op" onclick="appendToDisplay('*')">×</button>
+
+    <!-- Baris 3 -->
+    <button class="num" onclick="appendToDisplay('4')">4</button>
+    <button class="num" onclick="appendToDisplay('5')">5</button>
+    <button class="num" onclick="appendToDisplay('6')">6</button>
+    <button class="op" onclick="appendToDisplay('-')">−</button>
+
+    <!-- Baris 4 -->
+    <button class="num" onclick="appendToDisplay('1')">1</button>
+    <button class="num" onclick="appendToDisplay('2')">2</button>
+    <button class="num" onclick="appendToDisplay('3')">3</button>
+    <button class="op" onclick="appendToDisplay('+')">+</button>
+
+    <!-- Baris 5 -->
+    <button class="fn" onclick="appendToDisplay('**')">xʸ</button>
+    <button class="num" onclick="appendToDisplay('0')">0</button>
+    <button class="num" onclick="appendToDisplay('.')">.</button>
+    <button class="equals" onclick="calculateResult()">=</button>
+
+    <!-- Baris 6 (2 tombol melengkung) -->
+    <button class="fn" onclick="akar()">√</button>
+    <button class="fn" onclick="tambahPi()">π</button>
+    <!-- 2 slot kosong biar grid tetap rapi (bisa diisi tombol lain kalau mau) -->
+    <button class="fn" onclick="backspace()" style="grid-column: span 2;">⌫</button>
+  </div>
+</div>
+
+<script>
+  // ========== FUNGSI ==========
+
+  function appendToDisplay(value) {
+    let display = document.getElementById('display');
+    display.value += value;
+  }
+
+  function clearDisplay() {
+    document.getElementById('display').value = '';
+  }
+
+  function backspace() {
+    let display = document.getElementById('display');
+    display.value = display.value.slice(0, -1);
+  }
+
+  // Fungsi Akar Kuadrat
+  function akar() {
+    let display = document.getElementById('display');
+    let nilai = display.value.trim();
+
+    if (nilai === '') {
+      alert('Masukkan angka dulu!');
+      return;
+    }
+
+    let angka = Number(nilai);
+    if (isNaN(angka) || angka < 0) {
+      alert('Masukkan angka positif yang valid!');
+      return;
+    }
+
+    display.value = Math.sqrt(angka);
+  }
+
+  // Fungsi Pi (π) — langsung tambahkan nilai π
+  function tambahPi() {
+    let display = document.getElementById('display');
+    // Cek apakah input terakhir angka, kalau iya tambahkan *π supaya lebih natural
+    let lastChar = display.value.slice(-1);
+    if (lastChar >= '0' && lastChar <= '9') {
+      display.value += '*';
+    }
+    display.value += Math.PI;
+  }
+
+  // Fungsi Hitung Hasil
+  function calculateResult() {
+    let display = document.getElementById('display');
+    let input = display.value.trim();
+
+    if (input === '') {
+      alert('Masukkan perhitungan dulu!');
+      return;
+    }
+
+    try {
+      // Ganti simbol ÷ dan × biar eval bisa baca
+      let expression = input
+        .replace(/÷/g, '/')
+        .replace(/×/g, '*')
+        .replace(/−/g, '-');
+
+      // Evaluasi ekspresi
+      let hasil = Function('"use strict"; return (' + expression + ')')();
+
+      // Cek apakah hasilnya valid (bukan Infinity atau NaN)
+      if (!isFinite(hasil)) {
+        alert('Error: hasil tidak terdefinisi (∞)');
+        return;
+      }
+
+      // Bulatkan jika desimal kepanjangan
+      if (Number.isFinite(hasil) && !Number.isInteger(hasil)) {
+        hasil = parseFloat(hasil.toPrecision(12));
+      }
+
+      display.value = hasil;
+    } catch (error) {
+      alert('Ekspresi tidak valid! Periksa input kamu.');
+      console.warn('Error eval:', error);
+    }
+  }
+
+  // ========== DUKUNGAN KEYBOARD ==========
+  document.addEventListener('keydown', function (e) {
+    const key = e.key;
+
+    // Angka, operator, titik, kurung
+    if (/^[0-9.+\-*/()]$/.test(key)) {
+      e.preventDefault();
+      appendToDisplay(key);
+    }
+
+    // Enter = hitung
+    if (key === 'Enter') {
+      e.preventDefault();
+      calculateResult();
+    }
+
+    // Backspace = hapus 1 karakter
+    if (key === 'Backspace') {
+      e.preventDefault();
+      backspace();
+    }
+
+    // Escape = clear all
+    if (key === 'Escape') {
+      e.preventDefault();
+      clearDisplay();
+    }
+  });
+</script>
+
+</body>
+</html>
+</html>
